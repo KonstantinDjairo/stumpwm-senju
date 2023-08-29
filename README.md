@@ -9,15 +9,15 @@
 |------------------|----------------|------------------------------------------|
 | `super-z`        | Split Horizontal | Perform a horizontal window split       |
 | `super-x`        | Split Vertical   | Perform a vertical window split         |
-| `super-e`        | Emacs          | Open the Emacs text editor              |
-| `super-r`        | Remove Frame   | Close the current window frame          |
-| `super-w`        | List Frames    | List all frames within a window group   |
-| `super-;`        | Gomicsv        | Execute the Gomicsv command             |
-| `super-\ `       | OCR            | Perform Optical Character Recognition   |
-| `super-.`        | OCR-Hold       | Perform OCR and retain the result       |
-| `super-shift-r`  | Reload         | Reload the current context or content   |
-| `meta-p`         | Rofi           | Open the Rofi application launcher      |
-| `meta-o`         | Cabl           | Execute the Cabl command                |
+  | `super-e`        | Emacs          | Open the Emacs text editor or find it if it's already open              |
+  | `super-r`        | Remove Frame   | Close the current window frame          |
+  | `super-w`        | List Frames    | List all frames within a window group   |
+  | `super-;`        | Gomicsv        | open my manga reader                    |
+  | `super-\ `       | OCR            | OCR with transformer_ocr for japanese   |
+  | `super-.`        | OCR-Hold       | Perform OCR and retain the result       |
+  | `super-shift-r`  | Reload         | Reload stupmwm without without closing anything   |
+  | `meta-p`         | Rofi           | Open the Rofi application launcher      |
+  | `meta-o`         | Cabl           | Execute the Cabl command                |
 
 
 | Navigation | 

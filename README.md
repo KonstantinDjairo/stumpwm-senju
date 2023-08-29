@@ -13,7 +13,7 @@
 | `super-r`        | Remove Frame   | Close the current window frame          |
 | `super-w`        | List Frames    | List all frames within a window group   |
 | `super-;`        | Gomicsv        | Execute the Gomicsv command             |
-| `super-\``       | OCR            | Perform Optical Character Recognition   |
+| `super-\ `       | OCR            | Perform Optical Character Recognition   |
 | `super-.`        | OCR-Hold       | Perform OCR and retain the result       |
 | `super-shift-r`  | Reload         | Reload the current context or content   |
 | `meta-p`         | Rofi           | Open the Rofi application launcher      |

@@ -54,13 +54,40 @@
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
-(sleep 2) ;; for the sake of god, let him breath.
+(sleep 2)
 (ql:quickload "clx-truetype")
 (load-module "ttf-fonts")
 (xft:cache-fonts) ;; 
 (set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
 (set-font (make-instance 'xft:font :family "IPAMincho" :subfamily "Regular" :size 10))
 
+(run-shell-command "xsetroot -cursor_name macOS-BigSur-White")
+
+
+
+(setf *mode-line-background-color* "#000000" 
+      *mode-line-foreground-color* "#eceff4" )
+
+(setf *mode-line-border-color* "#161414"
+      *mode-line-border-width* 0
+      stumpwm:*mode-line-border-width* 4)
+
+
+
+
+(set-border-color       "#BDC0C6" )
+(set-focus-color        "#161414" )
+(set-unfocus-color      "#3E4451" )
+(set-float-focus-color  "#161414" )
+(set-float-unfocus-color "#3E4451" )
+
+
+(setq *frame-bg-color* "#161414")      ; Dark background color for frames
+(setq *frame-fg-color* "#BDC0C6")      ; Light foreground color for frames
+(setq *title-bg-color* "#3E4451")      ; Background color for window titles
+(setq *title-fg-color* "#1E1D23")      ; Text color for window titles
+(setq *modeline-bg-color* "#6E737E")   ; Background color for the modeline
+(setq *modeline-fg-color* "#eceff4")   ; Text color for the modeline
 
 
 
@@ -201,6 +228,16 @@
 
 ;; le gavin
 
+;;; -*-  mode: lisp; -*-
+(in-package :stumpwm)
+;;; Setup Modules and Quicklisp
+;; path to modules
+;; git clone git@github.com:stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
+(init-load-path #p"~/.config/stumpwm/modules/")
+(let ((quicklisp-init (merge-pathnames ".cache/quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
 
 ;; (setq *debug-level* 5)
 ;; (redirect-all-output (data-dir-file "debug-output" "txt"))

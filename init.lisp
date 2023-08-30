@@ -27,12 +27,14 @@
     (nth (- mon 1) '("1月" "2月" "3月" "4月"
                      "5月" "6月" "7月" "8月"
                      "9月" "10月" "11月" "12月")))
+
 (multiple-value-bind (sec min hr date mon yr dow dst-p tz)
       (get-decoded-time)
-    (format NIL "~2,'0d:~2,'0d:~2,'0d ~d年~a ~d日、~a"
+    (format NIL "~2,'0d:~2,'0d:~2,'0d ~d年~a時 ~d分、~a秒"
             yr (stringify-mon mon)
             date (stringify-dow dow)
             hr min sec)))
+
 
 
 (setf *screen-mode-line-format* (list "[^B%n^b] %W^>%d"))

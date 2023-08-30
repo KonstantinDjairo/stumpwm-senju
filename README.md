@@ -27,3 +27,8 @@ please consider using [that](https://github.com/goose121/clx-truetype) fork of c
 | `meta-j`   | 
 | `meta-k`   | 
 | `meta-l`   | 
+
+
+
+## Manga Workflow
+![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/d7280796-5046-4518-b785-3d91be582517)

@@ -1,6 +1,10 @@
 ;; -*- mode:read-only -*- ;;
 
 (in-package :stumpwm)
+(load "~/quicklisp/setup.lisp")
+
+
+(setq *shell-program* (stumpwm::getenv "SHELL"))
 
 
 (setf *message-window-gravity* :center
@@ -15,6 +19,61 @@
       *mouse-focus-policy* :click)
 
 
+(defun pretty-time ()
+  "日付を '17:19:51 2014年4月27日、日曜日' の形式で返します。"
+  (defun stringify-dow (dow)
+    (nth dow '("月曜日" "火曜日" "水曜日" "木曜日" "金曜日" "土曜日" "日曜日")))
+  (defun stringify-mon (mon)
+    (nth (- mon 1) '("1月" "2月" "3月" "4月"
+                     "5月" "6月" "7月" "8月"
+                     "9月" "10月" "11月" "12月")))
+(multiple-value-bind (sec min hr date mon yr dow dst-p tz)
+      (get-decoded-time)
+    (format NIL "~2,'0d:~2,'0d:~2,'0d ~d年~a ~d日、~a"
+            yr (stringify-mon mon)
+            date (stringify-dow dow)
+            hr min sec)))
+
+
+(setf *screen-mode-line-format* (list "[^B%n^b] %W^>%d"))
+(setf *mode-line-timeout* 2)
+(setf *screen-mode-line-format*
+      (list "[^B%n^b] %W " ; groups/windows
+            "^>" ; right align
+            " ^7* " '(:eval (pretty-time)); date
+            ))
+
+(setf *group-format* "%s [%n] %t ")
+(setf *window-format* "%m%n%s%c")
+
+
+
+(reload)
+(init-load-path #p"~/.stumpwm.d/modules/")
+(let ((quicklisp-init (merge-pathnames "~/quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+(sleep 2) ;; for the sake of god, let him breath.
+(ql:quickload "clx-truetype")
+(load-module "ttf-fonts")
+(xft:cache-fonts) ;; 
+(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
+(set-font (make-instance 'xft:font :family "IPAMincho" :subfamily "Regular" :size 10))
+
+
+
+
+(defun retil-windows ()
+  "Retile windows in the current group to remove empty spaces."
+  (interactive)
+  (if (not (eq *current-group* nil))
+      (progn
+        (group-activate *current-group*)
+        (tile))
+      (message "No group is active.")))
+
+(define-key *top-map* (kbd "M-'") 'retil-windows)
 
 
 
@@ -33,7 +92,7 @@
 (stumpwm:toggle-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head))
 
-(define-key *root-map* (kbd "v") "exec kitty")
+(define-key *root-map* (kbd "v") "exec xfce4-terminal")
 
 
 ;; manga
@@ -142,16 +201,6 @@
 
 ;; le gavin
 
-;;; -*-  mode: lisp; -*-
-(in-package :stumpwm)
-;;; Setup Modules and Quicklisp
-;; path to modules
-;; git clone git@github.com:stumpwm/stumpwm-contrib.git ~/.config/stumpwm/modules
-(init-load-path #p"~/.config/stumpwm/modules/")
-(let ((quicklisp-init (merge-pathnames ".cache/quicklisp/setup.lisp"
-                                       (user-homedir-pathname))))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
 
 ;; (setq *debug-level* 5)
 ;; (redirect-all-output (data-dir-file "debug-output" "txt"))

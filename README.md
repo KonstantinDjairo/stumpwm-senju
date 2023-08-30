@@ -1,7 +1,7 @@
 # stumpwm-senju
 
 
-![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/ae7a0132-b892-471c-88d1-57b91758df4d)
+![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/c5be6153-6598-4ec6-b111-a260d43ac689)
 
 please consider using [that](https://github.com/goose121/clx-truetype) fork of clx-truetype, if you want to display ttf fonts.
 

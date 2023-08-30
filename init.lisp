@@ -27,7 +27,6 @@
     (nth (- mon 1) '("1月" "2月" "3月" "4月"
                      "5月" "6月" "7月" "8月"
                      "9月" "10月" "11月" "12月")))
-
 (multiple-value-bind (sec min hr date mon yr dow dst-p tz)
       (get-decoded-time)
     (format NIL "~2,'0d:~2,'0d:~2,'0d ~d年~a時 ~d分、~a秒"
@@ -138,6 +137,8 @@
 (define-key *top-map* (kbd "M-n") "exec mupdf /mnt/Data/Japanese_Resources/languages-study(japanesAndRussian)/岩波数学辞典\ 第４版\ --\ 日本数学会\ --\ 第４版\,\ 2007\ --\ 岩波書店\ --\ 9784000803090\ --\ 49eeb143a4aef2f90d66e9527ffe161c\ --\ Anna’s\ Archive.pdf") 
 
 
+;; i need anki to be always open
+(run-shell-command "exec /home/ronnie/Downloads/anki/anki-2.1.66-linux-qt6/anki")
 
 ;; frames
 (define-key *root-map* (kbd "x") "hsplit")

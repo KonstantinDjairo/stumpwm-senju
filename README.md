@@ -1,7 +1,7 @@
 # stumpwm-senju
 
 
-![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/c5be6153-6598-4ec6-b111-a260d43ac689)
+![image](misc/screenshot.png)
 
 please consider using [that](https://github.com/goose121/clx-truetype) fork of clx-truetype, if you want to display ttf fonts.
 
@@ -31,4 +31,4 @@ please consider using [that](https://github.com/goose121/clx-truetype) fork of c
 
 
 ## Manga Workflow
-![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/d7280796-5046-4518-b785-3d91be582517)
+![image](misc/manga.png)

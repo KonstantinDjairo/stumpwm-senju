@@ -14,10 +14,6 @@
 
 (run-shell-command "exec fcitx5")
 
-(load-module "cpu")
-
-
-
 
 (setf *message-window-gravity* :center
       *input-window-gravity* :center

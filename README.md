@@ -19,7 +19,9 @@ please consider using [that](https://github.com/goose121/clx-truetype) fork of c
   | `super-shift-r`  | Reload         | Reload stupmwm without without closing anything   |
   | `meta-p`         | Rofi           | Open the Rofi application launcher      |
   | `meta-o`         | Cabl           | Execute the Cabl command                |
-
+  | `meta-b`         | Pomodoro start | 
+  | `meta-,`         | Pomodoro cancel | 
+  | `meta-=`         | Pomodoro status | 
 
 | Navigation | 
 |------------|

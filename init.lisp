@@ -4,7 +4,19 @@
 (load "~/quicklisp/setup.lisp")
 
 
+(run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
 (setq *shell-program* (stumpwm::getenv "SHELL"))
+(init-load-path #p"~/.stumpwm.d/modules/")
+(let ((quicklisp-init (merge-pathnames "~/quicklisp/setup.lisp"
+                                       (user-homedir-pathname))))
+  (when (probe-file quicklisp-init)
+    (load quicklisp-init)))
+
+(run-shell-command "exec fcitx5")
+
+(load-module "cpu")
+
+
 
 
 (setf *message-window-gravity* :center
@@ -36,13 +48,23 @@
 
 
 
+
+
 (setf *screen-mode-line-format* (list "[^B%n^b] %W^>%d"))
 (setf *mode-line-timeout* 2)
 (setf *screen-mode-line-format*
       (list "[^B%n^b] %W " ; groups/windows
             "^>" ; right align
-            " ^7* " '(:eval (pretty-time)); date
+(list '(:eval (concat "| "
+                     (run-shell-command "top -bn 1 | grep '%Cpu' | awk '{printf \"%.0f%%\", $2 + $4}'" :output)
+                     " |")))
+
+
+      " ^7* " '(:eval (pretty-time)); date
             ))
+
+
+(setf *mode-line-timeout* 2)
 
 (setf *group-format* "%s [%n] %t ")
 (setf *window-format* "%m%n%s%c")
@@ -50,11 +72,7 @@
 
 
 (reload)
-(init-load-path #p"~/.stumpwm.d/modules/")
-(let ((quicklisp-init (merge-pathnames "~/quicklisp/setup.lisp"
-                                       (user-homedir-pathname))))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
+
 (sleep 2)
 (ql:quickload "clx-truetype")
 (load-module "ttf-fonts")
@@ -140,8 +158,7 @@
 ;; i need anki & qbittorrent to be always open
 (run-shell-command "exec /home/ronnie/Downloads/anki/anki-2.1.66-linux-qt6/anki")
 (run-shell-command "qbittorrent")
-
-
+(run-shell-command "goldendict" )
 
 ;; frames
 (define-key *root-map* (kbd "x") "hsplit")
@@ -176,6 +193,15 @@
 (run-shell-command "xmodmap -e 'keycode 133 = F20'" t)
 (set-prefix-key (kbd "F20"))
 
+;; pomodoro
+(load-module "notifications")  ; optionally, goes before `swm-pomodoro`
+(load-module "swm-pomodoro")
+(define-key *top-map* (kbd "M-b") "pomodoro-start-timer")
+(define-key *top-map* (kbd "M-,") "pomodoro-cancel-timer")
+(define-key *top-map* (kbd "M-=") "pomodoro-status")
+
+
+
 
 
 (run-shell-command "exec feh --bg-fill ~/wallpaper.jpeg")
@@ -204,6 +230,10 @@
 (defvar *modeline-format*
   '(" " (:eval (workspace-number-to-character (current-group))) " " mode-line-misc-info mode-line-client
     mode-line-modified mode-line-frame-identification " " mode-line-buffer-identification))
+
+
+
+
 
 
 (define-command clean-empty-frames ()

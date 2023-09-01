@@ -38,3 +38,10 @@ Also, be aware that this my personal config, it will contain a lot of stuff that
 
 ## Manga Workflow
 ![image](misc/manga.png)
+
+
+## Reading Workflow 
+
+this is possible with the new feature added to crqt-ng by tatsumoto, now you can send selected text automatically to goldendict-ng 
+
+![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/a8754071-656d-4dff-a60c-8c2130fcbdba)

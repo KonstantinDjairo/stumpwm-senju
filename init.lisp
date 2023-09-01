@@ -4,6 +4,12 @@
 (load "~/quicklisp/setup.lisp")
 
 
+
+(run-shell-command "exec ~/scritps/fix-key.sh" t)
+
+(set-prefix-key (kbd "F20"))
+
+
 (run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
 (setq *shell-program* (stumpwm::getenv "SHELL"))
 (init-load-path #p"~/.stumpwm.d/modules/")
@@ -12,7 +18,7 @@
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 
-(run-shell-command "exec fcitx5")
+;;(run-shell-command "exec fcitx5")
 
 
 (setf *message-window-gravity* :center
@@ -72,8 +78,15 @@
 (sleep 2)
 (ql:quickload "clx-truetype")
 (load-module "ttf-fonts")
+
+;; Make sure my local fonts are avaliable
+(pushnew 
+                 	 "/usr/local/share/fonts/"
+         xft:*font-dirs* :test #'string=)
 (xft:cache-fonts) ;; 
-(set-font (make-instance 'xft:font :family "IPAMincho" :subfamily "Regular" :size 10))
+(set-font (make-instance 'xft:font :family "IPAUIGothic"
+:subfamily "Regular"
+:size 10))
 
 
 
@@ -83,7 +96,7 @@
 
 (setf *mode-line-border-color* "#161414"
       *mode-line-border-width* 0
-      stumpwm:*mode-line-border-width* 4)
+      stumpwm:*mode-line-border-width* 8)
 
 
 
@@ -193,10 +206,6 @@
 
 
 
-(run-shell-command "xmodmap -e 'clear mod4'" t)
-(run-shell-command "xmodmap -e 'keycode 133 = F20'" t)
-(set-prefix-key (kbd "F20"))
-
 ;; pomodoro
 (load-module "notifications")  ; optionally, goes before `swm-pomodoro`
 (load-module "swm-pomodoro")
@@ -208,7 +217,7 @@
 
 
 
-(run-shell-command "exec feh --bg-fill ~/wallpaper.jpeg")
+;;(run-shell-command "exec feh --bg-fill ~/wallpaper.jpeg")
 
 
 
@@ -386,10 +395,7 @@ restore it's always-on-top state afterwords"
 ;;; Font
 (ql:quickload :clx-truetype)
 
-;; Make sure my local fonts are avaliable
-(pushnew (concat (getenv "HOME")
-                 "/.local/share/fonts/")
-         xft:*font-dirs* :test #'string=)
+
 (xft:cache-fonts)
 
 (let ((parent-font "PragmataPro Liga"))

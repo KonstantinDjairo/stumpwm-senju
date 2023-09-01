@@ -155,8 +155,23 @@
 (run-shell-command "exec /home/ronnie/Downloads/anki/anki-2.1.66-linux-qt6/anki")
 (run-shell-command "qbittorrent")
 (run-shell-command "goldendict" )
+(run-shell-command "calibre" )
 
-;; frames
+
+;; run or raise
+(defcommand goldendict () ()
+  (run-or-raise "goldencit" '(:class "GoldenDict-ng")))
+(define-key *top-map* (kbd "M-d") "goldendict")
+
+
+(defcommand calibre () ()
+  (run-or-raise "calibre" '(:class "Calibre")))
+(define-key *top-map* (kbd "M-2") "calibre")
+
+
+
+
+;; Frames
 (define-key *root-map* (kbd "x") "hsplit")
 (define-key *root-map* (kbd "z") "vsplit")
 (define-key *root-map* (kbd "n") "remove-split")

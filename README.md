@@ -4,7 +4,8 @@
 ![image](misc/image.png)
 
 please consider using [that](https://github.com/goose121/clx-truetype) fork of clx-truetype, if you want to display ttf fonts.
-
+<br></br>
+Also, be aware that this my personal config, it will contain a lot of stuff that i use in the daily basis, that's why it start a lot of heavy services at the same time.
 
 | Keybinding       | Command        | Description                              |
 |------------------|----------------|------------------------------------------|
@@ -22,7 +23,10 @@ please consider using [that](https://github.com/goose121/clx-truetype) fork of c
   | `meta-b`         | Pomodoro start | 
   | `meta-,`         | Pomodoro cancel | 
   | `meta-=`         | Pomodoro status | 
+  | `meta-d`         | Open/find Goldendict |
+  | `meta-2`         | Open/find Calibre    |
 
+   
 | Navigation | 
 |------------|
 | `meta-h`   | 

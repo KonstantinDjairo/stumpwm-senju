@@ -52,7 +52,7 @@
       (list "[^B%n^b] %W " ; groups/windows
             "^>" ; right align
 (list '(:eval (concat "| "
-                     (run-shell-command "top -bn 1 | grep '%Cpu' | awk '{printf \"%.0f%%\", $2 + $4}'" :output)
+                     (run-shell-command "top -bn 1 | grep -o 'CPU: [0-9.]*' | sed 's/CPU: //' | perl -ne 'printf "%.0f%%", 100 - $_;'" :output)
                      " |")))
 
 
@@ -60,7 +60,7 @@
             ))
 
 
-(setf *mode-line-timeout* 2)
+(setf *mode-line-timeout* 5)
 
 (setf *group-format* "%s [%n] %t ")
 (setf *window-format* "%m%n%s%c")
@@ -73,10 +73,8 @@
 (ql:quickload "clx-truetype")
 (load-module "ttf-fonts")
 (xft:cache-fonts) ;; 
-(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
 (set-font (make-instance 'xft:font :family "IPAMincho" :subfamily "Regular" :size 10))
 
-(run-shell-command "xsetroot -cursor_name macOS-BigSur-White")
 
 
 
@@ -119,7 +117,7 @@
 
 
 
-(run-shell-command "xrandr --output HDMI-A-0 --mode 1366x768")
+;;(run-shell-command "xrandr --output HDMI-A-0 --mode 1366x768")
 ;;(run-shell-command "sh ~/.xprofile")
 (init-load-path #p"~/.stumpwm.d/modules/")
 (let ((quicklisp-init (merge-pathnames "~/quicklisp/setup.lisp"
@@ -138,9 +136,9 @@
 
 
 ;; manga
-(define-key *root-map* (kbd "`") "exec /home/ronnie/.local/bin/transformers_ocr recognize")
-(define-key *root-map* (kbd ".") "exec /home/ronnie/.local/bin/transformers_ocr hold")
-(define-key *root-map* (kbd ";") "exec /home/ronnie/Downloads/gomicsv/cmd/gomicsv/main")  ;; manga reader
+;;(define-key *root-map* (kbd "`") "exec /home/ronnie/.local/bin/transformers_ocr recognize")
+;;(define-key *root-map* (kbd ".") "exec /home/ronnie/.local/bin/transformers_ocr hold")
+;;(define-key *root-map* (kbd ";") "exec /home/ronnie/Downloads/gomicsv/cmd/gomicsv/main")  ;; manga reader
 ;; ---------------------
 
 
@@ -151,11 +149,6 @@
 (define-key *top-map* (kbd "M-n") "exec mupdf /mnt/Data/Japanese_Resources/languages-study(japanesAndRussian)/岩波数学辞典\ 第４版\ --\ 日本数学会\ --\ 第４版\,\ 2007\ --\ 岩波書店\ --\ 9784000803090\ --\ 49eeb143a4aef2f90d66e9527ffe161c\ --\ Anna’s\ Archive.pdf") 
 
 
-;; i need anki & qbittorrent to be always open
-(run-shell-command "exec /home/ronnie/Downloads/anki/anki-2.1.66-linux-qt6/anki")
-(run-shell-command "qbittorrent")
-(run-shell-command "goldendict" )
-(run-shell-command "calibre" )
 
 
 ;; run or raise

@@ -12,8 +12,16 @@
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 
-(run-shell-command "exec fcitx5")
 
+(run-shell-command "exec ~/.Xresources")
+(run-shell-command "exec tmux new -d fcitx5")
+;; onion server always running
+(run-shell-command "exec /home/ronnie/Downloads/darkmx/darkmx-1.27-linux64/darkmx")
+
+
+(sleep 1)
+;; for some weird reason, the keybinding stops working when fcitx is activated at first, but then it normalizes when we set the mod key again
+(run-shell-command "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'")
 
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
@@ -148,7 +156,9 @@
 (define-key *top-map* (kbd "M-o") "exec cabl")
 (define-key *top-map* (kbd "M-v") "exec dictpopup")
 (define-key *top-map* (kbd "M-f") "exec flameshot gui") 
-(define-key *top-map* (kbd "M-n") "exec mupdf /mnt/Data/Japanese_Resources/languages-study(japanesAndRussian)/岩波数学辞典\ 第４版\ --\ 日本数学会\ --\ 第４版\,\ 2007\ --\ 岩波書店\ --\ 9784000803090\ --\ 49eeb143a4aef2f90d66e9527ffe161c\ --\ Anna’s\ Archive.pdf") 
+(define-key *top-map* (kbd "M-n") "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'") 
+
+
 
 
 ;; i need anki & qbittorrent to be always open

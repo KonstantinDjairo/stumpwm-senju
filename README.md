@@ -25,6 +25,8 @@ Also, be aware that this my personal config, it will contain a lot of stuff that
   | `meta-=`         | Pomodoro status | 
   | `meta-d`         | Open/find Goldendict |
   | `meta-2`         | Open/find Calibre    |
+  | `meta-n`         | Activate mod-key     | Sometimes the mod-key (super) simply stops responding, you can revive it by pressing that keybinding. |
+
 
    
 | Navigation | 

@@ -26,7 +26,7 @@ Also, be aware that this my personal config, it will contain a lot of stuff that
   | `meta-d`         | Open/find Goldendict |
   | `meta-2`         | Open/find Calibre    |
   | `meta-n`         | Activate mod-key     | Sometimes the mod-key (super) simply stops responding, you can revive it by pressing that keybinding. |
-
+  | `meta-]`         | Shows clipboard manager/history with rofi                 | You will need to install greenclip for that and also my shell script called clipboard_history.sh |
 
    
 | Navigation | 

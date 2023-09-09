@@ -14,7 +14,10 @@
 
 
 (run-shell-command "exec ~/.Xresources")
-(run-shell-command "exec tmux new -d fcitx5")
+
+;; しかたない。
+;;(run-shell-command "exec tmux new -d fcitx5")
+
 ;; onion server always running
 (run-shell-command "exec /home/ronnie/Downloads/darkmx/darkmx-1.27-linux64/darkmx")
 
@@ -22,6 +25,8 @@
 (sleep 1)
 ;; for some weird reason, the keybinding stops working when fcitx is activated at first, but then it normalizes when we set the mod key again
 (run-shell-command "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'")
+
+
 
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
@@ -152,7 +157,14 @@
 ;; ---------------------
 
 
+
+
 (define-key *top-map* (kbd "M-p") "exec rofi -show drun")
+
+
+(run-shell-command "if [ -z \"$(pgrep greenclip)\" ]; then tmux new -d greenclip daemon; fi")
+(define-key *top-map* (kbd "M-]") "exec clipboard_history.sh")
+
 (define-key *top-map* (kbd "M-o") "exec cabl")
 (define-key *top-map* (kbd "M-v") "exec dictpopup")
 (define-key *top-map* (kbd "M-f") "exec flameshot gui") 

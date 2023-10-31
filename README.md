@@ -17,7 +17,7 @@ Also, be aware that this my personal config, it will contain a lot of stuff that
   | `super-;`        | Gomicsv        | open my manga reader                    |
   | `super-\ `       | OCR            | OCR with transformer_ocr for japanese   |
   | `super-.`        | OCR-Hold       | Perform OCR and retain the result       |
-  | `super-shift-r`  | Reload         | Reload stupmwm without without closing anything   |
+  | `super-shift-r`  | Reload         | Reload stupmwm without closing anything   |
   | `meta-p`         | Rofi           | Open the Rofi application launcher      |
   | `meta-o`         | Cabl           | Execute the Cabl command                |
   | `meta-b`         | Pomodoro start | 

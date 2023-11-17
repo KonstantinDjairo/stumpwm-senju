@@ -6,20 +6,20 @@
 
 (run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
 (setq *shell-program* (stumpwm::getenv "SHELL"))
-(init-load-path #p"~/.stumpwm.d/modules/")
-(let ((quicklisp-init (merge-pathnames "~/quicklisp/setup.lisp"
+(init-load-path #p"/home/hashirama/.stumpwm.d/modules/")
+(let ((quicklisp-init (merge-pathnames "/home/hashirama/quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 
 
-(run-shell-command "xrdb ~/.Xresources")
+(run-shell-command "xrdb /home/hashirama/.Xresources")
 
 ;; しかたない。
 ;;(run-shell-command "exec tmux new -d fcitx5")
 
 ;; onion server always running
-(run-shell-command "exec /home/hashirama/Downloads/darkmx/darkmx-1.27-linux64/darkmx")
+;;(run-shell-command "exec /home/hashirama/Downloads/darkmx-1.27-linux64/darkmx")
 
 
 (sleep 1)

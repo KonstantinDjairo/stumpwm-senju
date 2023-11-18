@@ -1,19 +1,69 @@
 ;; -*- mode:read-only -*- ;;
 
 (in-package :stumpwm)
-(load "~/quicklisp/setup.lisp")
+;;(load "~/quicklisp/setup.lisp")
 
-
-(run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
 (setq *shell-program* (stumpwm::getenv "SHELL"))
+(run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
+
+
+(mapcar #'add-to-load-path (build-load-path
+                            (concat (getenv "HOME") "~/.stumpwm.d/modules/")))
+
+;;#-quicklisp
+;;(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
+;;                                       (user-homedir-pathname))))
+;;  (when (probe-file quicklisp-init)
+;;    (load quicklisp-init)))
+
+;; log everything to ~/.stumpwm.d/stumpwm.log
+(redirect-all-output (merge-pathnames *data-dir* "stumpwm.log"))
+
+(stumpwm:toggle-mode-line (stumpwm:current-screen)
+                          (stumpwm:current-head))
+
 (init-load-path #p"/home/hashirama/.stumpwm.d/modules/")
-(let ((quicklisp-init (merge-pathnames "/home/hashirama/quicklisp/setup.lisp"
-                                       (user-homedir-pathname))))
-  (when (probe-file quicklisp-init)
-    (load quicklisp-init)))
+
+(define-key *top-map* (kbd "M-v") "exec /usr/bin/dictpopup")
+
+
+;;(run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
+;;(setq *shell-program* (stumpwm::getenv "SHELL"))
+;;(init-load-path #p"/home/hashirama/.stumpwm.d/modules/")
+;;(let ((quicklisp-init (merge-pathnames "/home/hashirama/quicklisp/setup.lisp"
+;;                                       (user-homedir-pathname))))
+;;  (when (probe-file quicklisp-init)
+;;   (load quicklisp-init)))
 
 
 (run-shell-command "xrdb /home/hashirama/.Xresources")
+(run-shell-command "exec feh --bg-fill ~/wallpaper.jpg  & picom -b")
+(run-shell-command "xrandr --output HDMI-A-0 --mode 1366x768")
+(define-key *top-map* (kbd "M-p") "exec firefox")
+(define-key *top-map* (kbd "M-l") "exec xfce4-terminal")
+
+
+
+(define-key *top-map* (kbd "M-d") "exec rofi -show run")
+
+;; Frames
+(define-key *root-map* (kbd "x") "hsplit")
+(define-key *root-map* (kbd "z") "vsplit")
+(define-key *root-map* (kbd "n") "remove-split")
+
+
+(define-key *root-map* (kbd "Q") "quit")
+(define-key *root-map* (kbd "R") "restart-hard")
+
+(define-key *root-map* (kbd "q") "delete")
+(define-key *root-map* (kbd "r") "remove")
+
+
+(run-shell-command "xmodmap -e 'clear mod4'" t) ;; clears windowskey/mod4
+
+(run-shell-command "xmodmap -e \'keycode 133 = F20\'" t) ;;assigns F20 to keycode 133
+
+(set-prefix-key (kbd "F20")) ;; sets prefix to F20 which was just assigned to windows key 
 
 ;; しかたない。
 ;;(run-shell-command "exec tmux new -d fcitx5")
@@ -23,10 +73,6 @@
 
 
 (sleep 1)
-;; for some weird reason, the keybinding stops working when fcitx is activated at first, but then it normalizes when we set the mod key again
-(run-shell-command "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'")
-
-
 
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
@@ -40,40 +86,53 @@
       *mouse-focus-policy* :click)
 
 
-(defun pretty-time ()
-  "日付を '17:19:51 2014年4月27日、日曜日' の形式で返します。"
-  (defun stringify-dow (dow)
-    (nth dow '("月曜日" "火曜日" "水曜日" "木曜日" "金曜日" "土曜日" "日曜日")))
-  (defun stringify-mon (mon)
-    (nth (- mon 1) '("1月" "2月" "3月" "4月"
-                     "5月" "6月" "7月" "8月"
-                     "9月" "10月" "11月" "12月")))
-(multiple-value-bind (sec min hr date mon yr dow dst-p tz)
-      (get-decoded-time)
-    (format NIL "~2,'0d:~2,'0d:~2,'0d ~d年~a時 ~d分、~a秒"
-            yr (stringify-mon mon)
-            date (stringify-dow dow)
-            hr min sec)))
+(defvar *senju/workspaces*
+  (list "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12"))
 
+(stumpwm:grename (nth 0 *senju/workspaces*))
+
+(dolist (workspace (cdr *senju/workspaces*))
+  (stumpwm:gnewbg workspace))
+
+(defvar *move-to-keybinds*
+  (list "!" "@" "#" "$" "%" "^" "&" "*" "(" "[" "]"))
+
+(dotimes (y (length *senju/workspaces*))
+  (let ((workspace (write-to-string y)))
+    (define-key *root-map* (kbd workspace) (concat "gselect " workspace))
+    (define-key *root-map* (kbd (nth y *move-to-keybinds*)) (concat "gmove-and-follow " workspace))))
+
+(defun workspace-number-to-character (index)
+  (if (numberp index)
+      (write-to-string index)
+      ""))
+
+
+(defvar *modeline-format*
+  '(" " (:eval (workspace-number-to-character (current-group))) " " mode-line-misc-info mode-line-client
+    mode-line-modified mode-line-frame-identification " " mode-line-buffer-identification))
+
+
+(setf *mode-line-background-color* "#000000" 
+      *mode-line-foreground-color* "#eceff4" )
+
+(setf *mode-line-border-color* "#161414"
+      *mode-line-border-width* 0
+      stumpwm:*mode-line-border-width* 4)
 
 
 
 
 (setf *screen-mode-line-format* (list "[^B%n^b] %W^>%d"))
 (setf *mode-line-timeout* 2)
-(setf *screen-mode-line-format*
-      (list "[^B%n^b] %W " ; groups/windows
-            "^>" ; right align
-(list '(:eval (concat "| "
-                     (run-shell-command "top -bn 1 | grep '%Cpu' | awk '{printf \"%.0f%%\", $2 + $4}'" :output)
-                     " |")))
-
-
-      " ^7* " '(:eval (pretty-time)); date
-            ))
-
-
 (setf *mode-line-timeout* 2)
+
+(setf *screen-mode-line-format*
+      (list "[^B%n^b] %W "
+            "^>"
+            " ^7* " '(:eval (format-time-string "%H:%M"))))
+
+
 
 (setf *group-format* "%s [%n] %t ")
 (setf *window-format* "%m%n%s%c")
@@ -87,18 +146,9 @@
 (load-module "ttf-fonts")
 (xft:cache-fonts) ;; 
 (set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
-(set-font (make-instance 'xft:font :family "IPAMincho" :subfamily "Regular" :size 10))
+(set-font (make-instance 'xft:font :family "HanaMinA" :subfamily "Regular" :size 10))
 
-(run-shell-command "xsetroot -cursor_name macOS-BigSur-White")
-
-
-
-(setf *mode-line-background-color* "#000000" 
-      *mode-line-foreground-color* "#eceff4" )
-
-(setf *mode-line-border-color* "#161414"
-      *mode-line-border-width* 0
-      stumpwm:*mode-line-border-width* 4)
+;;(run-shell-command "xsetroot -cursor_name macOS-BigSur-White")
 
 
 
@@ -147,6 +197,33 @@
 (stumpwm:toggle-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head))
 
+(defvar *senju/workspaces*
+  ;;   (list "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強"))
+
+  (list "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強"))
+  (stumpwm:grename (nth 0 *senju/workspaces*))
+(dolist (workspace (cdr *senju/workspaces*))
+  (stumpwm:gnewbg workspace))
+
+(defvar *move-to-keybinds*
+  (list "!" "@" "#" "$" "%" "^" "&" "*" "(" "[" "]"))
+(dotimes (y (length *senju/workspaces*))
+  (let ((workspace (write-to-string (+ y 1))))
+    (define-key *root-map* (kbd workspace) (concat "gselect " workspace))
+    (define-key *root-map* (kbd (nth y *move-to-keybinds*)) (concat "gmove-and-follow " workspace))))
+
+(defun workspace-number-to-character (index)
+  (elt '("一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強") index))
+
+;; Modify the modeline format to display group numbers as characters
+(defvar *modeline-format*
+  '(" " (:eval (workspace-number-to-character (current-group))) " " mode-line-misc-info mode-line-client
+    mode-line-modified mode-line-frame-identification " " mode-line-buffer-identification))
+
+
+
+
+
 (define-key *root-map* (kbd "v") "exec alacritty")
 
 
@@ -166,7 +243,7 @@
 ;;(define-key *top-map* (kbd "M-]") "exec clipboard_history.sh")
 
 (define-key *top-map* (kbd "M-o") "exec cabl")
-(define-key *top-map* (kbd "M-v") "exec dictpopup")
+
 (define-key *top-map* (kbd "M-f") "exec flameshot gui") 
 (define-key *top-map* (kbd "M-n") "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'") 
 
@@ -230,17 +307,14 @@
 (set-prefix-key (kbd "F20"))
 
 ;; pomodoro
-(load-module "notifications")  ; optionally, goes before `swm-pomodoro`
-(load-module "swm-pomodoro")
-(define-key *top-map* (kbd "M-b") "pomodoro-start-timer")
-(define-key *top-map* (kbd "M-,") "pomodoro-cancel-timer")
-(define-key *top-map* (kbd "M-=") "pomodoro-status")
+;;(load-module "notifications")  ; optionally, goes before `swm-pomodoro`
+;;(load-module "swm-pomodoro")
+;;(define-key *top-map* (kbd "M-b") "pomodoro-start-timer")
+;;(define-key *top-map* (kbd "M-,") "pomodoro-cancel-timer")
+;;(define-key *top-map* (kbd "M-=") "pomodoro-status")
 
 
 
-
-
-(run-shell-command "exec feh --bg-fill ~/wallpaper.jpeg")
 
 
 
@@ -294,8 +368,6 @@
       stumpwm::*float-window-border* 4
       stumpwm::*float-window-title-height* 20
       *mouse-focus-policy* :click)
-
-
 
 
 

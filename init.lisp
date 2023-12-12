@@ -1,33 +1,117 @@
-;; -*- mode:read-only -*- ;;
-
-(in-package :stumpwm)
-(load "~/quicklisp/setup.lisp")
-
-
-(run-shell-command "export PATH='${PATH}:${HOME}/.local/bin'")
-(setq *shell-program* (stumpwm::getenv "SHELL"))
-(init-load-path #p"/home/hashirama/.stumpwm.d/modules/")
-(let ((quicklisp-init (merge-pathnames "/home/hashirama/quicklisp/setup.lisp"
+#-quicklisp
+(let ((quicklisp-init (merge-pathnames "quicklisp/setup.lisp"
                                        (user-homedir-pathname))))
   (when (probe-file quicklisp-init)
     (load quicklisp-init)))
 
+;; log everything to ~/.stumpwm.d/stumpwm.log
+(redirect-all-output (merge-pathnames *data-dir* "stumpwm.log"))
 
-(run-shell-command "xrdb /home/hashirama/.Xresources")
+(stumpwm:toggle-mode-line (stumpwm:current-screen)
+                          (stumpwm:current-head))
 
-;; しかたない。
-;;(run-shell-command "exec tmux new -d fcitx5")
-
-;; onion server always running
-;;(run-shell-command "exec /home/hashirama/Downloads/darkmx-1.27-linux64/darkmx")
-
-
-(sleep 1)
-;; for some weird reason, the keybinding stops working when fcitx is activated at first, but then it normalizes when we set the mod key again
-(run-shell-command "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'")
+(in-package :stumpwm)
+(setf *default-package* :stumpwm)
 
 
+(setf *mode-line-pad-x* 5) ; Adjust the value as needed
+(setf *mode-line-pad-y* 10) ; Adjust the value as needed
 
+(setf *mode-line-background-color* "black")
+(setf *mode-line-foreground-color* "black")
+(setf *mode-line-border-color* "black")
+
+
+;; we have to make it workable
+(run-shell-command "xmodmap -e 'clear mod4'" t) ;; clears windowskey/mod4
+
+(run-shell-command "xmodmap -e \'keycode 133 = F20\'" t) ;;assigns F20 to keycode 133
+
+(set-prefix-key (kbd "F20")) ;; sets prefix to F20 which was just assigned to windows key
+
+(run-shell-command "exec feh --bg-fill ~/wallpaper.jpg  & picom -b")
+(run-shell-command "xrandr --output HDMI-A-0 --mode 1366x768")
+(define-key *top-map* (kbd "M-p") "exec firefox")
+(define-key *top-map* (kbd "M-l") "exec xfce4-terminal")
+(define-key *top-map* (kbd "M-d") "exec rofi -show run")
+(define-key *root-map* (kbd "R") "restart-hard")
+
+
+
+
+(set-module-dir "/home/hashirama/.stumpwm.d/modules/")
+(load-module 'binwarp)
+
+(binwarp:define-binwarp-mode binwarp-mode
+  "M" (:map *root-map*
+      :redefine-bindings t)
+  ((kbd "a") "binwarp right")
+  ((kbd "w") "binwarp up")
+  ((kbd "s") "binwarp down")
+  ((kbd "d") "binwarp left")
+  ((kbd "RET") "ratclick 1")
+  ((kbd "SPC") "ratclick 3")
+  ((kbd "C-n") "ratrelwarp  0 +5")
+  ((kbd "C-p") "ratrelwarp  0 -5")
+  ((kbd "C-f") "ratrelwarp +5  0")
+  ((kbd "C-b") "ratrelwarp -5  0")
+  ((kbd "C-N") "ratrelwarp  0 +35")    
+  ((kbd "C-P") "ratrelwarp  0 -35")    
+  ((kbd "C-F") "ratrelwarp +35  0")    
+  ((kbd "C-B") "ratrelwarp -35  0")) 
+
+
+
+
+
+
+(ql:quickload "clx-truetype")
+(load-module "ttf-fonts")
+(xft:cache-fonts) ;; 
+(set-font (make-instance 'xft:font :family "HanaMinA" :subfamily "Regular" :size 12))
+(setf *startup-message* "fonts loaded")
+(setf *mode-line-bg* "black")
+
+(define-key *top-map* (kbd "M-v") "exec /usr/bin/dictpopup")
+
+;; I LOVE TYPING
+(define-key *top-map* (kbd "M-g") "exec touchtyper")
+
+
+;; youtube
+(define-key *top-map* (kbd "M-f") "exec /bin/bash -c  youtube_search")                                                                                                                      
+
+;; Frames
+(define-key *root-map* (kbd "x") "hsplit")
+(define-key *root-map* (kbd "z") "vsplit")
+(define-key *root-map* (kbd "n") "remove-split")
+
+
+(define-key *root-map* (kbd "Q") "quit")
+(define-key *root-map* (kbd "R") "restart-hard")
+
+(define-key *root-map* (kbd "q") "delete")                                                                                                                                
+(define-key *root-map* (kbd "r") "remove")
+
+
+;; Set padding in pixels
+(setf *mode-line-pad-x* 2) ; Adjust the value as needed
+(setf *mode-line-pad-y* 2) ; Adjust the value as needed
+
+;; Set modeline colors
+(setf *mode-line-background-color* "black")
+(setf *mode-line-foreground-color* "white") ; Adjust the value as needed
+(setf *mode-line-border-color* "black")
+
+
+(load-module "swm-gaps")
+(setf swm-gaps:*head-gaps-size*  0
+      swm-gaps:*inner-gaps-size* 5
+      swm-gaps:*outer-gaps-size* 40)
+;;(when *initializing*
+;;  (swm-gaps:toggle-gaps))
+
+;; ----------
 (setf *message-window-gravity* :center
       *input-window-gravity* :center
       *window-border-style* :thin
@@ -55,9 +139,41 @@
             date (stringify-dow dow)
             hr min sec)))
 
+;; ----
+
+(setf *mode-line-timeout* 2)
+
+(setf *group-format* "%s [%n] %t ")
+(setf *window-format* "%m%n%s%c")
 
 
+;;---
 
+
+(defvar *senju/workspaces*
+  ;;   (list "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強"))
+
+  (list "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強"))
+  (stumpwm:grename (nth 0 *senju/workspaces*))
+(dolist (workspace (cdr *senju/workspaces*))
+  (stumpwm:gnewbg workspace))
+
+(defvar *move-to-keybinds*
+  (list "!" "@" "#" "$" "%" "^" "&" "*" "(" "[" "]"))
+(dotimes (y (length *senju/workspaces*))
+  (let ((workspace (write-to-string (+ y 1))))
+    (define-key *root-map* (kbd workspace) (concat "gselect " workspace))
+    (define-key *root-map* (kbd (nth y *move-to-keybinds*)) (concat "gmove-and-follow " workspace))))
+
+(defun workspace-number-to-character (index)
+  (elt '("一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強") index))
+
+;; Modify the modeline format to display group numbers as characters
+(defvar *modeline-format*
+  '(" " (:eval (workspace-number-to-character (current-group))) " " mode-line-misc-info mode-line-client
+    mode-line-modified mode-line-frame-identification " " mode-line-buffer-identification))
+
+;--
 
 (setf *screen-mode-line-format* (list "[^B%n^b] %W^>%d"))
 (setf *mode-line-timeout* 2)
@@ -72,25 +188,110 @@
       " ^7* " '(:eval (pretty-time)); date
             ))
 
-
-(setf *mode-line-timeout* 2)
-
-(setf *group-format* "%s [%n] %t ")
-(setf *window-format* "%m%n%s%c")
+;;---
 
 
+(run-shell-command "xrdb /home/hashirama/.Xresources")
 
-(reload)
+(run-shell-command "exec qbittorrent")
+(run-shell-command "exec fcitx5")
+;; onion server always running
+(run-shell-command "exec /home/hashirama/Downloads/darkmx-1.27-linux64/darkmx")
 
-(sleep 2)
-(ql:quickload "clx-truetype")
-(load-module "ttf-fonts")
-(xft:cache-fonts) ;; 
-(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
-(set-font (make-instance 'xft:font :family "IPAMincho" :subfamily "Regular" :size 10))
 
-(run-shell-command "xsetroot -cursor_name macOS-BigSur-White")
 
+
+
+;; Frames
+(define-key *root-map* (kbd "x") "hsplit")
+(define-key *root-map* (kbd "z") "vsplit")
+(define-key *root-map* (kbd "n") "remove-split")
+
+
+(define-key *root-map* (kbd "Q") "quit")
+(define-key *root-map* (kbd "R") "restart-hard")
+
+(define-key *root-map* (kbd "q") "delete")
+(define-key *root-map* (kbd "r") "remove")
+
+
+
+
+(sleep 4)
+
+(run-shell-command "xmodmap -e 'clear mod4'" t) ;; clears windowskey/mod4
+
+(run-shell-command "xmodmap -e \'keycode 133 = F20\'" t) ;;assigns F20 to keycode 133
+
+(set-prefix-key (kbd "F20")) ;; sets prefix to F20 which was just assigned to windows key 
+
+
+
+
+
+(setf *screen-mode-line-format*
+      (list '(:eval (run-shell-command "date '+%R %b %d' |tr -d [:cntrl:]" t)) " | %c | %l | [^B%n^b] %W"))
+
+;; Click to focus
+(setf *mouse-focus-policy* :click)
+
+
+
+(sleep 2) ;; wait for fcitx5 
+;;(run-shell-command "xmodmap -e 'clear mod4'" t)
+;;(run-shell-command "xmodmap -e 'keycode 133 = Super_L'" t)
+;;(run-shell-command " xmodmap -e 'add mod4 = Super_L'" t)
+
+
+;;(set-prefix-key (kbd "mod4"))  
+
+
+
+
+
+
+
+
+
+(sleep 1)
+
+(setf *message-window-gravity* :center
+      *input-window-gravity* :center
+      *window-border-style* :thin
+      *message-window-padding* 10
+      *maxsize-border-width* 2
+      *normal-border-width* 2
+      *transient-border-width* 2
+      stumpwm::*float-window-border* 4
+      stumpwm::*float-window-title-height* 20
+      *mouse-focus-policy* :click)
+
+
+(defvar *senju/workspaces*
+  (list "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12"))
+
+(stumpwm:grename (nth 0 *senju/workspaces*))
+
+(dolist (workspace (cdr *senju/workspaces*))
+  (stumpwm:gnewbg workspace))
+
+(defvar *move-to-keybinds*
+  (list "!" "@" "#" "$" "%" "^" "&" "*" "(" "[" "]"))
+
+(dotimes (y (length *senju/workspaces*))
+  (let ((workspace (write-to-string y)))
+    (define-key *root-map* (kbd workspace) (concat "gselect " workspace))
+    (define-key *root-map* (kbd (nth y *move-to-keybinds*)) (concat "gmove-and-follow " workspace))))
+
+(defun workspace-number-to-character (index)
+  (if (numberp index)
+      (write-to-string index)
+      ""))
+
+
+(defvar *modeline-format*
+  '(" " (:eval (workspace-number-to-character (current-group))) " " mode-line-misc-info mode-line-client
+    mode-line-modified mode-line-frame-identification " " mode-line-buffer-identification))
 
 
 (setf *mode-line-background-color* "#000000" 
@@ -99,6 +300,39 @@
 (setf *mode-line-border-color* "#161414"
       *mode-line-border-width* 0
       stumpwm:*mode-line-border-width* 4)
+
+
+
+
+(setf *screen-mode-line-format* (list "[^B%n^b] %W^>%d"))
+(setf *mode-line-timeout* 2)
+(setf *mode-line-timeout* 2)
+
+(setf *screen-mode-line-format*
+      (list "[^B%n^b] %W "
+            "^>"
+            " ^7* " '(:eval (format-time-string "%H:%M"))))
+
+
+
+(setf *group-format* "%s [%n] %t ")
+(setf *window-format* "%m%n%s%c")
+
+(setf *screen-mode-line-format*
+      (list '(:eval (run-shell-command "date '+%R %b %d' |tr -d [:cntrl:]" t)) " | %c | %l | [^B%n^b] %W"))
+
+;; Click to focus
+(setf *mouse-focus-policy* :click)
+
+
+(reload)
+
+(sleep 2)
+
+(set-font "-xos4-terminus-medium-r-normal-*-20-*-*-*-*-*-*-*")
+(set-font (make-instance 'xft:font :family "HanaMinA" :subfamily "Regular" :size 10))
+
+;;(run-shell-command "xsetroot -cursor_name macOS-BigSur-White")
 
 
 
@@ -147,6 +381,33 @@
 (stumpwm:toggle-mode-line (stumpwm:current-screen)
                           (stumpwm:current-head))
 
+(defvar *senju/workspaces*
+  ;;   (list "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強"))
+
+  (list "一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強"))
+  (stumpwm:grename (nth 0 *senju/workspaces*))
+(dolist (workspace (cdr *senju/workspaces*))
+  (stumpwm:gnewbg workspace))
+
+(defvar *move-to-keybinds*
+  (list "!" "@" "#" "$" "%" "^" "&" "*" "(" "[" "]"))
+(dotimes (y (length *senju/workspaces*))
+  (let ((workspace (write-to-string (+ y 1))))
+    (define-key *root-map* (kbd workspace) (concat "gselect " workspace))
+    (define-key *root-map* (kbd (nth y *move-to-keybinds*)) (concat "gmove-and-follow " workspace))))
+
+(defun workspace-number-to-character (index)
+  (elt '("一" "二" "三" "四" "五" "六" "七" "八" "九" "十" "数学" "勉強") index))
+
+;; Modify the modeline format to display group numbers as characters
+(defvar *modeline-format*
+  '(" " (:eval (workspace-number-to-character (current-group))) " " mode-line-misc-info mode-line-client
+    mode-line-modified mode-line-frame-identification " " mode-line-buffer-identification))
+
+
+
+
+
 (define-key *root-map* (kbd "v") "exec alacritty")
 
 
@@ -166,7 +427,7 @@
 ;;(define-key *top-map* (kbd "M-]") "exec clipboard_history.sh")
 
 (define-key *top-map* (kbd "M-o") "exec cabl")
-(define-key *top-map* (kbd "M-v") "exec dictpopup")
+
 (define-key *top-map* (kbd "M-f") "exec flameshot gui") 
 (define-key *top-map* (kbd "M-n") "exec xmodmap -e 'clear mod4' && exec xmodmap -e 'keycode 133 = F20'") 
 
@@ -230,17 +491,14 @@
 (set-prefix-key (kbd "F20"))
 
 ;; pomodoro
-(load-module "notifications")  ; optionally, goes before `swm-pomodoro`
-(load-module "swm-pomodoro")
-(define-key *top-map* (kbd "M-b") "pomodoro-start-timer")
-(define-key *top-map* (kbd "M-,") "pomodoro-cancel-timer")
-(define-key *top-map* (kbd "M-=") "pomodoro-status")
+;;(load-module "notifications")  ; optionally, goes before `swm-pomodoro`
+;;(load-module "swm-pomodoro")
+;;(define-key *top-map* (kbd "M-b") "pomodoro-start-timer")
+;;(define-key *top-map* (kbd "M-,") "pomodoro-cancel-timer")
+;;(define-key *top-map* (kbd "M-=") "pomodoro-status")
 
 
 
-
-
-(run-shell-command "exec feh --bg-fill ~/wallpaper.jpeg")
 
 
 
@@ -294,9 +552,5 @@
       stumpwm::*float-window-border* 4
       stumpwm::*float-window-title-height* 20
       *mouse-focus-policy* :click)
-
-
-
-
 
 

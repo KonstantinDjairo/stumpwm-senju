@@ -55,7 +55,7 @@ this is possible with the new feature added to crqt-ng by tatsumoto, now you can
 
 # Audio server for passive immersion
 ### put that on .bashrc :
-```console
+```bash
 if [[ $- == *i* ]]; then
     # Check if Navidrome is already running
     if ! pgrep -x "navidrome" > /dev/null; then

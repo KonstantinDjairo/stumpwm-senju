@@ -42,8 +42,28 @@ Also, be aware that this my personal config, it will contain a lot of stuff that
 ![image](misc/manga.png)
 
 
+
+
+
+
 ## Reading Workflow 
 
 this is possible with the new feature added to crqt-ng by tatsumoto, now you can send selected text automatically to goldendict-ng 
 
 ![image](https://github.com/KonstantinDjairo/stumpwm-senju/assets/53496273/a8754071-656d-4dff-a60c-8c2130fcbdba)
+
+
+# Audio server for passive immersion
+### put that on .bashrc :
+```console
+if [[ $- == *i* ]]; then
+    # Check if Navidrome is already running
+    if ! pgrep -x "navidrome" > /dev/null; then
+        # Execute the script only if Navidrome is not running
+        ~/scripts/audio_server.sh
+    else
+        echo "Navidrome is already running. Skipping startup."
+    fi
+fi
+
+```
